@@ -7,16 +7,16 @@ Original file is located at
     https://colab.research.google.com/drive/1Tb5GaA7VKZwRAtOBxW2F8RfbF1qvPdQe
 """
 
+```
 import streamlit as st
-import xgboost 
+import pickle
 import numpy as np
 
 # Page settings
 st.set_page_config(page_title="Heart Attack Prediction", page_icon="❤️", layout="wide")
 
-# Load model
-model = joblib.load("Heart_Attack_Prediction_Model.pkl")
-
+# Load model (using pickle to avoid dependency issues)
+model = pickle.load(open("Heart_Attack_Prediction_Model.pkl", "rb"))
 
 # Title
 st.markdown("<h1 style='text-align:center;color:#FF4B4B;'>❤️ Heart Attack Prediction System</h1>", unsafe_allow_html=True)
@@ -27,29 +27,29 @@ st.write("---")
 # Sidebar Inputs
 st.sidebar.header("Patient Information")
 
-age = st.sidebar.number_input("Age", 18, 100)
+age = st.sidebar.number_input("Age", 18, 100, value=30)
 gender = st.sidebar.selectbox("Gender", ["Female", "Male"])
-heart_rate = st.sidebar.number_input("Heart Rate")
-sys_bp = st.sidebar.number_input("Systolic Blood Pressure")
-dia_bp = st.sidebar.number_input("Diastolic Blood Pressure")
-blood_sugar = st.sidebar.number_input("Blood Sugar")
-ck_mb = st.sidebar.number_input("CK-MB Level")
-troponin = st.sidebar.number_input("Troponin Level")
+heart_rate = st.sidebar.number_input("Heart Rate", value=80)
+sys_bp = st.sidebar.number_input("Systolic Blood Pressure", value=120)
+dia_bp = st.sidebar.number_input("Diastolic Blood Pressure", value=80)
+blood_sugar = st.sidebar.number_input("Blood Sugar", value=100)
+ck_mb = st.sidebar.number_input("CK-MB Level", value=2.0)
+troponin = st.sidebar.number_input("Troponin Level", value=0.01)
 
 # Encode gender
 gender = 1 if gender == "Male" else 0
 
+# Summary
 st.write("## Patient Data Summary")
 
 col1, col2, col3 = st.columns(3)
-
 col1.metric("Age", age)
 col2.metric("Heart Rate", heart_rate)
 col3.metric("Blood Sugar", blood_sugar)
 
 st.write("---")
 
-# Prediction Button
+# Prediction
 if st.button("Predict Heart Attack Risk", use_container_width=True):
 
     input_data = np.array([[age, gender, heart_rate, sys_bp, dia_bp, blood_sugar, ck_mb, troponin]])
@@ -64,4 +64,3 @@ if st.button("Predict Heart Attack Risk", use_container_width=True):
     else:
         st.success("✅ Low Risk of Heart Attack")
         st.info("Patient currently shows lower risk indicators.")
-
