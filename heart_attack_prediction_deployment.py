@@ -15,7 +15,7 @@ import numpy as np
 st.set_page_config(page_title="Heart Attack Prediction", page_icon="❤️", layout="wide")
 
 # Load model (using pickle to avoid dependency issues)
-model = pickle.load(open("Heart_Attack_Prediction_Model.pkl", "rb"))
+model = pickle.load(open("Heart_Attack_Prediction_Model (1).pkl"))
 
 # Title
 st.markdown("<h1 style='text-align:center;color:#FF4B4B;'>❤️ Heart Attack Prediction System</h1>", unsafe_allow_html=True)
