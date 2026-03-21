@@ -10,6 +10,7 @@ Original file is located at
 import streamlit as st
 import pickle
 import numpy as np
+import joblib 
 
 # Page settings
 st.set_page_config(page_title="Heart Attack Prediction", page_icon="❤️", layout="wide")
