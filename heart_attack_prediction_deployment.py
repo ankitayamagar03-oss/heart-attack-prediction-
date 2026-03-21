@@ -11,35 +11,57 @@ import streamlit as st
 import joblib
 import numpy as np
 
-st.set_page_config(page_title="Heart Attack Prediction", page_icon="❤️")
+# Page settings
+st.set_page_config(page_title="Heart Attack Prediction", page_icon="❤️", layout="wide")
 
 # Load model
-@st.cache_resource
-def load_model():
-    return joblib.load("Heart_Model.pkl")
+model = joblib.load("Heart_Attack_Prediction_Model.pkl")
 
-try:
-    model = load_model()
-except Exception as e:
-    st.error(f"Model error: {e}")
-    st.stop()
 
-st.title("❤️ Heart Attack Prediction")
+# Title
+st.markdown("<h1 style='text-align:center;color:#FF4B4B;'>❤️ Heart Attack Prediction System</h1>", unsafe_allow_html=True)
+st.markdown("<p style='text-align:center;'>Enter patient medical details to predict heart attack risk</p>", unsafe_allow_html=True)
 
-age = st.number_input("Age", 18, 100)
-gender = st.selectbox("Gender", ["Female", "Male"])
-heart_rate = st.number_input("Heart Rate", value=80)
+st.write("---")
 
+# Sidebar Inputs
+st.sidebar.header("Patient Information")
+
+age = st.sidebar.number_input("Age", 18, 100)
+gender = st.sidebar.selectbox("Gender", ["Female", "Male"])
+heart_rate = st.sidebar.number_input("Heart Rate")
+sys_bp = st.sidebar.number_input("Systolic Blood Pressure")
+dia_bp = st.sidebar.number_input("Diastolic Blood Pressure")
+blood_sugar = st.sidebar.number_input("Blood Sugar")
+ck_mb = st.sidebar.number_input("CK-MB Level")
+troponin = st.sidebar.number_input("Troponin Level")
+
+# Encode gender
 gender = 1 if gender == "Male" else 0
 
-if st.button("Predict"):
-    data = np.array([[age, gender, heart_rate, 120, 80, 100, 2.0, 0.01]])
-    
-    try:
-        pred = model.predict(data)
-        if pred[0] == 1:
-            st.error("High Risk")
-        else:
-            st.success("Low Risk")
-    except Exception as e:
-        st.error(f"Prediction error: {e}")
+st.write("## Patient Data Summary")
+
+col1, col2, col3 = st.columns(3)
+
+col1.metric("Age", age)
+col2.metric("Heart Rate", heart_rate)
+col3.metric("Blood Sugar", blood_sugar)
+
+st.write("---")
+
+# Prediction Button
+if st.button("Predict Heart Attack Risk", use_container_width=True):
+
+    input_data = np.array([[age, gender, heart_rate, sys_bp, dia_bp, blood_sugar, ck_mb, troponin]])
+
+    prediction = model.predict(input_data)
+
+    st.write("### Prediction Result")
+
+    if prediction[0] == 1:
+        st.error("⚠ High Risk of Heart Attack")
+        st.info("Please consult a cardiologist immediately.")
+    else:
+        st.success("✅ Low Risk of Heart Attack")
+        st.info("Patient currently shows lower risk indicators.")
+ what is wrong in this code error is coming
