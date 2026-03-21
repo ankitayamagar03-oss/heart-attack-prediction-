@@ -10,13 +10,17 @@ Original file is located at
 import streamlit as st
 import pickle
 import numpy as np
-import joblib 
 
 # Page settings
 st.set_page_config(page_title="Heart Attack Prediction", page_icon="❤️", layout="wide")
 
 # Load model safely
-model = joblib.load("Heart_Attack_Prediction_Model.pkl")
+try:
+    with open("Heart_Model.pkl", "rb") as file:
+        model = pickle.load(file)
+except Exception as e:
+    st.error(f"Error loading model: {e}")
+    st.stop()
 
 # Title
 st.markdown("<h1 style='text-align:center;color:#FF4B4B;'>❤️ Heart Attack Prediction System</h1>", unsafe_allow_html=True)
@@ -27,7 +31,7 @@ st.write("---")
 # Sidebar Inputs
 st.sidebar.header("Patient Information")
 
-age = st.sidebar.number_input("Age", 18, 100, value=30)
+age = st.sidebar.number_input("Age", min_value=18, max_value=100, value=30)
 gender = st.sidebar.selectbox("Gender", ["Female", "Male"])
 heart_rate = st.sidebar.number_input("Heart Rate", value=80)
 sys_bp = st.sidebar.number_input("Systolic Blood Pressure", value=120)
@@ -52,15 +56,24 @@ st.write("---")
 # Prediction
 if st.button("Predict Heart Attack Risk", use_container_width=True):
 
-    input_data = np.array([[age, gender, heart_rate, sys_bp, dia_bp, blood_sugar, ck_mb, troponin]])
+    try:
+        input_data = np.array([[age, gender, heart_rate, sys_bp, dia_bp, blood_sugar, ck_mb, troponin]])
 
-    prediction = model.predict(input_data)
+        prediction = model.predict(input_data)
 
-    st.write("### Prediction Result")
+        st.write("### Prediction Result")
 
-    if prediction[0] == 1:
-        st.error("⚠ High Risk of Heart Attack")
-        st.info("Please consult a cardiologist immediately.")
-    else:
-        st.success("✅ Low Risk of Heart Attack")
-        st.info("Patient currently shows lower risk indicators.")
+        if prediction[0] == 1:
+            st.error("⚠ High Risk of Heart Attack")
+            st.info("Please consult a cardiologist immediately.")
+        else:
+            st.success("✅ Low Risk of Heart Attack")
+            st.info("Patient currently shows lower risk indicators.")
+
+        # Optional: show probability
+        if hasattr(model, "predict_proba"):
+            prob = model.predict_proba(input_data)[0][1]
+            st.write(f"Risk Probability: {prob*100:.2f}%")
+
+    except Exception as e:
+        st.error(f"Prediction error: {e}")
