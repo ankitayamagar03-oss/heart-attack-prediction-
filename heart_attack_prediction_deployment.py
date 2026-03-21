@@ -8,72 +8,38 @@ Original file is located at
 """
 
 import streamlit as st
-import joblib 
+import joblib
 import numpy as np
 
-# Page settings
-st.set_page_config(page_title="Heart Attack Prediction", page_icon="❤️", layout="wide")
+st.set_page_config(page_title="Heart Attack Prediction", page_icon="❤️")
 
-# Load model safely
+# Load model
+@st.cache_resource
+def load_model():
+    return joblib.load("Heart_Model.pkl")
+
 try:
-    with open("Heart_Attack_Prediction_Model (1).pkl", "rb") as file:
-
+    model = load_model()
 except Exception as e:
-    st.error(f"Error loading model: {e}")
+    st.error(f"Model error: {e}")
     st.stop()
 
-# Title
-st.markdown("<h1 style='text-align:center;color:#FF4B4B;'>❤️ Heart Attack Prediction System</h1>", unsafe_allow_html=True)
-st.markdown("<p style='text-align:center;'>Enter patient medical details to predict heart attack risk</p>", unsafe_allow_html=True)
+st.title("❤️ Heart Attack Prediction")
 
-st.write("---")
+age = st.number_input("Age", 18, 100)
+gender = st.selectbox("Gender", ["Female", "Male"])
+heart_rate = st.number_input("Heart Rate", value=80)
 
-# Sidebar Inputs
-st.sidebar.header("Patient Information")
-
-age = st.sidebar.number_input("Age", min_value=18, max_value=100, value=30)
-gender = st.sidebar.selectbox("Gender", ["Female", "Male"])
-heart_rate = st.sidebar.number_input("Heart Rate", value=80)
-sys_bp = st.sidebar.number_input("Systolic Blood Pressure", value=120)
-dia_bp = st.sidebar.number_input("Diastolic Blood Pressure", value=80)
-blood_sugar = st.sidebar.number_input("Blood Sugar", value=100)
-ck_mb = st.sidebar.number_input("CK-MB Level", value=2.0)
-troponin = st.sidebar.number_input("Troponin Level", value=0.01)
-
-# Encode gender
 gender = 1 if gender == "Male" else 0
 
-# Summary
-st.write("## Patient Data Summary")
-
-col1, col2, col3 = st.columns(3)
-col1.metric("Age", age)
-col2.metric("Heart Rate", heart_rate)
-col3.metric("Blood Sugar", blood_sugar)
-
-st.write("---")
-
-# Prediction
-if st.button("Predict Heart Attack Risk", use_container_width=True):
-
+if st.button("Predict"):
+    data = np.array([[age, gender, heart_rate, 120, 80, 100, 2.0, 0.01]])
+    
     try:
-        input_data = np.array([[age, gender, heart_rate, sys_bp, dia_bp, blood_sugar, ck_mb, troponin]])
-
-        prediction = model.predict(input_data)
-
-        st.write("### Prediction Result")
-
-        if prediction[0] == 1:
-            st.error("⚠ High Risk of Heart Attack")
-            st.info("Please consult a cardiologist immediately.")
+        pred = model.predict(data)
+        if pred[0] == 1:
+            st.error("High Risk")
         else:
-            st.success("✅ Low Risk of Heart Attack")
-            st.info("Patient currently shows lower risk indicators.")
-
-        # Optional: show probability
-        if hasattr(model, "predict_proba"):
-            prob = model.predict_proba(input_data)[0][1]
-            st.write(f"Risk Probability: {prob*100:.2f}%")
-
+            st.success("Low Risk")
     except Exception as e:
         st.error(f"Prediction error: {e}")
