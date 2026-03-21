@@ -8,7 +8,7 @@ Original file is located at
 """
 
 import streamlit as st
-import pickle
+import joblib 
 import numpy as np
 
 # Page settings
@@ -17,7 +17,7 @@ st.set_page_config(page_title="Heart Attack Prediction", page_icon="❤️", lay
 # Load model safely
 try:
     with open("Heart_Attack_Prediction_Model (1).pkl", "rb") as file:
-        model = pickle.load(file)
+
 except Exception as e:
     st.error(f"Error loading model: {e}")
     st.stop()
