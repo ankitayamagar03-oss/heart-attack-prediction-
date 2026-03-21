@@ -8,7 +8,7 @@ Original file is located at
 """
 
 import streamlit as st
-import joblib 
+import joblib
 import numpy as np
 
 # Page settings
