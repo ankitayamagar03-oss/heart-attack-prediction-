@@ -16,13 +16,13 @@ import os
 st.set_page_config(page_title="Heart Attack Prediction", page_icon="❤️", layout="wide")
 
 # Safe Dynamic Model Loading System
-BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-TARGET_FILE = "Heart_Attack_Prediction_Model.pkl"
-model_path = None
+BASE_DIR = os.path.dirname(os.path.abspath(C:\Users\Shankar\OneDrive\Desktop\heart attack prediction))
+TARGET_FILE = "Heart_Attack_Prediction_Model.pkl(1)"
+model_path = C:\Users\Shankar\OneDrive\Desktop\heart attack prediction
 
 # 1. Check primary directory
-if os.path.exists(os.path.join(BASE_DIR, TARGET_FILE)):
-    model_path = os.path.join(BASE_DIR, TARGET_FILE)
+if os.path.exists(os.path.join(C:\Users\Shankar\OneDrive\Desktop\heart attack prediction)):
+    model_path = os.path.join(C:\Users\Shankar\OneDrive\Desktop\heart attack prediction)
 else:
     # 2. Deep recursive folder search for case-insensitive matches
     for root, dirs, files in os.walk(BASE_DIR):
@@ -37,7 +37,7 @@ else:
 if model_path:
     model = joblib.load(model_path)
 else:
-    st.error(f"❌ FileNotFoundError: Could not find '{TARGET_FILE}' anywhere in your GitHub repository folder layout. Please check your file upload paths.")
+    st.error(f"❌ FileNotFoundError: Could not find '{C:\Users\Shankar\OneDrive\Desktop\heart attack prediction}' anywhere in your GitHub repository folder layout. Please check your file upload paths.")
     st.stop()
 
 
