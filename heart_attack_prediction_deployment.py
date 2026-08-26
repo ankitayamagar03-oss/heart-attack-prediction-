@@ -45,7 +45,7 @@ col1, col2, col3 = st.columns(3)
 
 col1.metric("Age", age)
 col2.metric("Heart Rate", heart_rate)
-col3.metric("Blood Sugar", blood_sugar)
+col3.metric("Blood Sugar", blood_sugar) 
 
 st.write("---")
 
